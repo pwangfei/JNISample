@@ -50,9 +50,23 @@ Java_com_example_jnisample_SignatureJni_signatureVerify(JNIEnv *env, jobject thi
 }
 
 
+
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_example_jnisample_SignatureJni_signAES(JNIEnv *env, jobject thiz, jobject context) {
+Java_com_example_jnisample_SignatureJni_signAES(JNIEnv *env, jobject thiz, jbyteArray plaintext) {
+    // 获取Java类的引用
+    jclass clazz = env->FindClass("com/example/jnisample/aes/AESUtil");
 
+    // 获取单例对象的引用
+    jmethodID getInstanceMethodId = env->GetStaticMethodID(clazz, "getInstance", "()Lcom/example/jnisample/aes/AESUtil;");
+    jobject singleton = env->CallStaticObjectMethod(clazz, getInstanceMethodId);
+
+    // 获取要调用的方法的ID
+    jmethodID methodId = env->GetMethodID(clazz, "encrypt", "([B)Ljava/lang/String;");
+
+    // 调用Java方法
+     jstring str= static_cast<jstring>(env->CallObjectMethod(singleton, methodId, plaintext));
+
+    return str;
 
 }

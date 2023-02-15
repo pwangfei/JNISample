@@ -38,11 +38,11 @@ public class MainActivity extends AppCompatActivity {
         String destr= AESUtil.getInstance().decrypt(enstr);
         Log.e("wpf123wpf", "解密的数据: "+destr );
 
-
         encryp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+               String strDe= paramsJni.signAES(str.getBytes());
+               Log.e("wpf123wpf", "NDK加密内容输出: "+strDe);
             }
         });
 

@@ -3,6 +3,8 @@ package com.example.jnisample;
 
 import android.content.Context;
 
+import com.example.jnisample.aes.AESUtil;
+
 /**
  * Created by wpf 2023/2/15
  */
@@ -19,10 +21,9 @@ public class SignatureJni {
 
     /**
      * 通过反射调用AES加密
-     * @param context
      * @return
      */
-    public native String signAES(Context context);
+    public native String signAES(byte[] plaintext);
 
 
 }
