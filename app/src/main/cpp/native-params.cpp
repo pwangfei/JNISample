@@ -1,5 +1,15 @@
 #include <jni.h>
 #include <string>
+#include <android/log.h>
+#define LOG_TAG "MyApp"
+
+//可以使用的包名
+const char *PACKAGE_NAME = "com.example.jnisample";
+//APP的签名
+const char *APP_SIGNATURE = "308202e4308201cc020101300d06092a864886f70d010105050030373116301406035504030c0d416e64726f69642044656275673110300e060355040a0c07416e64726f6964310b30090603550406130255533020170d3230303232353130333132325a180f32303530303231373130333132325a30373116301406035504030c0d416e64726f69642044656275673110300e060355040a0c07416e64726f6964310b300906035504061302555330820122300d06092a864886f70d01010105000382010f003082010a0282010100c83075ad7136193a4c68155552d0cee95db61d67f03abd97ab4eaa8037a2ffeb8e9dbea6ec0bbed2f6fec68a5001a4b6e882ecc25c03e20826d31a3db1bca05e8feec70f2d4028163ce1203e8452de01c216e8392f86176769ffd19be2296fe452fc27c080420002081fc7d7f441d5f60c2585e3f3567453a9797936858d98b5c80cb720984b79b7caf63f07d471547482e6c81a0f198264273f1d7bad216240b9bba61b6731802b1b58b43b915d032cd14048a5394ba1c6900eb4bcf5875885f2e639e36e1a0a416b3e7ef917c36095f8ad6dc04e302fd6473c88e6ea75b969c56892520fa8afd8b9820eacef10a54edb37c81e6e3d5f1612e4fea1f898362d0203010001300d06092a864886f70d0101050500038201010022ae9d136cf30f7c6ea27b7beb25028b7ea09777e7e5e7c209627aed18ddd4d632f98fa10b28e7d495e2e1c6636858eee028df1201b065fcd7caea1adbf15b6a238e91ec51f1389a0f0a0ab59349a9befdf7c015069a77868ea9b01f05ce160c41524ffc2396a71df32756d251d551d7dcd94c7dca5cdfbff4187b161adb262ddde76c6e1a54d7de1ebb589121ba1c5d6ff46a3bb6dcfca6fd1dacc41516f4ff53d7209061f221acd4a2e4deb61d90ca6ecbdc183f2f0602d5ec84152b60aa12a33b88553391e809a9699469f5e9379e8999f55acdf2d0d07b7d0e853d383a9c672dcf4cb7316bd473c06aaef1ecb296a3ca85d6aba86ac9a38fe0a5700a0548";
+//是否可用
+bool isVerify = 0;
+
 
 extern "C"
 JNIEXPORT jint JNICALL
@@ -11,93 +21,21 @@ Java_com_example_jnisample_ParamsJni_intMethod(JNIEnv *env, jobject thiz, jint n
     return sum;
 }
 
-extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_example_jnisample_ParamsJni_stringMethod(JNIEnv *env, jobject thiz, jstring name) {
-    const char *str = env->GetStringUTFChars(name, 0);
-
-    char ch[20] = "hello, ";
-    strcat(ch, str);
-
-    env->ReleaseStringUTFChars(name, str);
-
-    return env->NewStringUTF(ch);
-}
 
 
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_example_jnisample_ParamsJni_intArrayMethod(JNIEnv *env, jobject thiz, jintArray arr_) {
-    jint len = 0, sum = 0;
-    jint *arr = env->GetIntArrayElements(arr_, 0);
-    len = env->GetArrayLength(arr_);
-    //由于一些版本不兼容，i不定义在for循环中
-    jint i=0;
-    for(; i < len; i++) {
-        sum += arr[i];
+Java_com_example_jnisample_ParamsJni_signatureVerify(JNIEnv *env, jobject thiz, jobject context) {
+    //1.校验包名
+    jclass jclz = env->GetObjectClass(context);
+    jmethodID jmid = env->GetMethodID(jclz, "getPackageName", "()Ljava/lang/String;");
+    jstring jPackageName = static_cast<jstring>(env->CallObjectMethod(context, jmid));
+    const char *cPackageName = env->GetStringUTFChars(jPackageName, 0);
+    __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "%s", cPackageName);
+    if (strcmp(cPackageName, PACKAGE_NAME) != 0) {//校验包名，如果包名不对直接退出
+        exit(0);
     }
-    env->ReleaseIntArrayElements(arr_, arr, 0);  //释放内存
+    jint sum = 0;
     return sum;
-}
-
-
-extern "C"
-JNIEXPORT jobject JNICALL
-Java_com_example_jnisample_ParamsJni_personArrayListMethod(JNIEnv *env, jobject thiz,
-                                                           jobject persons) {
-
-    //通过参数获取 ArrayList 对象的 class
-    jclass clazz = env->GetObjectClass(persons);
-    if(clazz == NULL) {
-        return env->NewStringUTF("not find class");
-    }
-    //获取 ArrayList 无参数的构造函数
-    jmethodID constructorMid = env->GetMethodID(clazz, "<init>", "()V");
-    if(constructorMid == NULL) {
-        return env->NewStringUTF("not find constructor method");
-    }
-    //new一个 ArrayList 对象
-    jobject arrayList = env->NewObject(clazz, constructorMid);
-    //获取 ArrayList 的 add 方法的id
-    jmethodID addMid = env->GetMethodID(clazz, "add", "(Ljava/lang/Object;)Z");
-
-    //获取 Person 类的 class
-    jclass personCls = env->FindClass("com/example/jnisample/model/Person");
-    //获取 Person 的构造函数的 id
-    jmethodID personMid = env->GetMethodID(personCls, "<init>", "(ILjava/lang/String;)V");
-
-    jint i=0;
-    for(; i < 3; i++) {
-        jstring name = env->NewStringUTF("Native");
-        jobject person = env->NewObject(personCls, personMid, 18 +i, name);
-        //添加 person 到 ArrayList
-        env->CallBooleanMethod(arrayList, addMid, person);
-    }
-    return arrayList;
-}
-
-
-extern "C"
-JNIEXPORT jobject JNICALL
-Java_com_example_jnisample_ParamsJni_objectMethod(JNIEnv *env, jobject thiz, jobject person) {
-    jclass clazz = env->GetObjectClass(person);  //注意是用 person，不是 jobj
-//    jclass jclazz = env->FindClass("cn/cfanr/jnisample/model/Person;");  //或者通过反射获取
-    if(clazz == NULL) {
-        return env->NewStringUTF("cannot find class");
-    }
-    //获取方法 id
-    jmethodID constructorMid = env->GetMethodID(clazz, "<init>", "(ILjava/lang/String;)V");
-    if(constructorMid == NULL) {
-        return env->NewStringUTF("not find constructor method");
-    }
-    jstring name = env->NewStringUTF("cfanr");
-
-    return env->NewObject(clazz, constructorMid, 21, name);
-}
-
-extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_example_jnisample_DynamicRegisterJni_getStringFromCpp(JNIEnv *env, jobject thiz) {
-
 }
