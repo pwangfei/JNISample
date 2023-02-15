@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.jnisample.model.Person;
@@ -23,8 +25,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        TextView tv = findViewById(R.id.sample_text);
-        tv.setText(stringFromJNI());
+        Button sign = findViewById(R.id.sign);
+        Button encryp = findViewById(R.id.encryp);
+        sign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        encryp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         /**
          *  函數調用类的參數
@@ -44,12 +59,12 @@ public class MainActivity extends AppCompatActivity {
         /**
          * JNI 访问 Java 的方法
          */
-//        MethodJni methodJni = new MethodJni();
-//        Log.e("wpf123wpf", "调用前：getSex() = " + methodJni.getSex());
-//        methodJni.accessPublicMethod();
-//        Log.e("wpf123wpf", "调用后：getSex() = " + methodJni.getSex());
-//        Log.e("wpf123wpf", "调用静态方法：getHeight() = " + methodJni.accessStaticMethod());
-//        Log.e("wpf123wpf", "调用父类方法：hello(name) = " + methodJni.accessSuperMethod());
+        MethodJni methodJni = new MethodJni();
+        Log.e("wpf123wpf", "调用前：getSex() = " + methodJni.getSex());
+        methodJni.accessPublicMethod();
+        Log.e("wpf123wpf", "调用后：getSex() = " + methodJni.getSex());
+        Log.e("wpf123wpf", "调用静态方法：getHeight() = " + methodJni.accessStaticMethod());
+        Log.e("wpf123wpf", "调用父类方法：hello(name) = " + methodJni.accessSuperMethod());
 
 
         /**
@@ -85,12 +100,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("wpf123wpf", "handlerStrToByte: " + (char) b);
         }
 
-        /**
-         * 动态注册 JNI
-         */
-        Log.e("wpf123wpf", "-----------动态注册 JNI----------");
-        String hello = new DynamicRegisterJni().getStringFromCpp();
-        Log.e("wpf123wpf", hello);
+
 
     }
 
