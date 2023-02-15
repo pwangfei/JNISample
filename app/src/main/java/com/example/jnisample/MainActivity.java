@@ -1,16 +1,10 @@
 package com.example.jnisample;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.example.jnisample.model.Person;
-
-import java.util.ArrayList;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         Button sign = findViewById(R.id.sign);
         Button encryp = findViewById(R.id.encryp);
 
-        ParamsJni paramsJni=new ParamsJni();
+        SignatureJni paramsJni=new SignatureJni();
         sign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
     }
+
 
 
 }
