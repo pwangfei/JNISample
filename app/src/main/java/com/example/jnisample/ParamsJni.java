@@ -13,10 +13,8 @@ import java.util.ArrayList;
 
 public class ParamsJni {
 
-    public native int intMethod(int n);
-
-
 
     public native int signatureVerify(Context context);
+
 
 }

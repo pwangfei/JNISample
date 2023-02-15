@@ -21,9 +21,22 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            keyAlias 'carSlave'
+            keyPassword 'carSlave'
+            storeFile file('link_apk_build//CarSlave.keystore')
+            storePassword 'carSlave'
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

@@ -11,17 +11,6 @@ const char *APP_SIGNATURE = "308202e4308201cc020101300d06092a864886f70d010105050
 bool isVerify = 0;
 
 
-extern "C"
-JNIEXPORT jint JNICALL
-Java_com_example_jnisample_ParamsJni_intMethod(JNIEnv *env, jobject thiz, jint n) {
-    jint sum = 0;
-    for(jint i =1; i <= n; i++) {
-        sum += i;
-    }
-    return sum;
-}
-
-
 
 
 extern "C"
@@ -34,6 +23,30 @@ Java_com_example_jnisample_ParamsJni_signatureVerify(JNIEnv *env, jobject thiz, 
     const char *cPackageName = env->GetStringUTFChars(jPackageName, 0);
     __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "%s", cPackageName);
     if (strcmp(cPackageName, PACKAGE_NAME) != 0) {//校验包名，如果包名不对直接退出
+        exit(0);
+    }
+
+    jmid = env->GetMethodID(jclz, "getPackageManager", "()Landroid/content/pm/PackageManager;");
+    jobject packManager = env->CallObjectMethod(context, jmid);
+    //getPackageInfo
+    jclz = env->GetObjectClass(packManager);
+    jmid = env->GetMethodID(jclz, "getPackageInfo",
+                            "(Ljava/lang/String;I)Landroid/content/pm/PackageInfo;");
+    jobject packageInfo = env->CallObjectMethod(packManager, jmid, jPackageName, 0x00000040);
+    //signatures
+    jclz = env->GetObjectClass(packageInfo);
+    jfieldID jfid = env->GetFieldID(jclz, "signatures", "[Landroid/content/pm/Signature;");
+    jobjectArray signatures = static_cast<jobjectArray>(env->GetObjectField(packageInfo, jfid));
+    //signatures[0]
+    jobject signature0 = env->GetObjectArrayElement(signatures, 0);
+    //toCharsString
+    jclz = env->GetObjectClass(signature0);
+    jmid = env->GetMethodID(jclz, "toCharsString", "()Ljava/lang/String;");
+    jobject signature_str = env->CallObjectMethod(signature0, jmid);
+    //转换成char*
+    const char *signature_char = env->GetStringUTFChars(static_cast<jstring>(signature_str), 0);
+    //对比签名
+    if (strcmp(signature_char, APP_SIGNATURE) != 0) {
         exit(0);
     }
     jint sum = 0;

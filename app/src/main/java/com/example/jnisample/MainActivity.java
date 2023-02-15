@@ -27,13 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
         Button sign = findViewById(R.id.sign);
         Button encryp = findViewById(R.id.encryp);
-        /**
-         *  函數調用类的參數
-         */
 
         ParamsJni paramsJni=new ParamsJni();
-        int num=paramsJni.intMethod(6);
-        Log.e("wpf123wpf", "累加之和: "+num );
         sign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
