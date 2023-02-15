@@ -49,9 +49,10 @@ Java_com_example_jnisample_SignatureJni_signatureVerify(JNIEnv *env, jobject thi
     return sum;
 }
 
+
 extern "C"
-JNIEXPORT jint JNICALL
-Java_com_example_jnisample_SignatureJni_md5(JNIEnv *env, jobject thiz, jobject context) {
+JNIEXPORT jstring JNICALL
+Java_com_example_jnisample_SignatureJni_signAES(JNIEnv *env, jobject thiz, jobject context) {
 
 
 }

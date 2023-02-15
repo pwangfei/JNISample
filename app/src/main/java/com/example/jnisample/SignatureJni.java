@@ -10,7 +10,19 @@ import android.content.Context;
 public class SignatureJni {
 
 
+    /**
+     * 包签名认证，只有授权的包才可以通过认证
+     * @param context
+     * @return
+     */
     public native int signatureVerify(Context context);
 
-    public native int md5(Context context);
+    /**
+     * 通过反射调用AES加密
+     * @param context
+     * @return
+     */
+    public native String signAES(Context context);
+
+
 }
